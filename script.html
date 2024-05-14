@@ -1,0 +1,82 @@
+<!-- Load jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+<!-- Load Sheetrock -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sheetrock/1.1.5/sheetrock.min.js"></script>
+
+<!-- Load DataTables -->
+<script src="https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.2/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/searchbuilder/1.2.1/js/dataTables.searchBuilder.min.js"></script>
+<script src="https://cdn.datatables.net/searchbuilder/1.2.1/js/searchBuilder.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/datetime/1.1.1/js/dataTables.dateTime.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/colreorder/1.5.4/js/dataTables.colReorder.min.js"></script>
+
+<!-- Your Script -->
+<script>
+// Define spreadsheet URL.
+var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/1O4qTpb09_OdZLtN8brBKhgQlYoZnXiR2rHQ07Njf0Qs/edit#gid=0';
+
+// Load top ten switch hitters.
+$(document).ready(function() {
+  $('#example').sheetrock({
+    url: mySpreadsheet,
+    query: "select A,B,C,D,E where C is not null",
+  }).on('sheetrock:loaded', function() {
+    $(this).DataTable({
+      responsive: true,
+      colReorder: true,
+      lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "ทั้งหมด"]],
+      order: [3, "desc"], // เรียงลำดับเฉพาะคอลัมน์วันที่
+      // กำหนดหัวคอลัมภ์โดยตั้งชื่อเอง
+      columns: [
+    { 
+        title: "รูปภาพ",
+        render: function(data, type, row) {
+            var photo = row[4]; // เปลี่ยนเป็นตำแหน่งของคอลัมน์ที่มีข้อมูลรูปภาพ
+            return '<img src="' + photo + '" width="240" height="124">';
+        }
+    },
+    { title: "ชื่ออัลบั้ม" },
+    { 
+        title: "GooglePhoto",
+        render: function(data, type, row) {
+            var photoUrl = row[2];
+            return '<a href="' + photoUrl + '" target="_blank">เปิดอัลบั้ม</a>';
+        }
+    },
+    { title: "วันที่" },
+    { 
+        title: "ปก",
+        render: function(data, type, row) {
+            return '<a href="' + row[3] + '" target="_blank"><img src="' + row[3] + '" class="avatar" width="50" height="50"/></a>'; // ปรับตำแหน่งของคอลัมน์ที่มีรูปภาพปก
+        }
+    }
+],
+ columnDefs: [
+        { targets: [4], visible: false } // ซ่อนคอลัมน์ "ปก"
+      ],
+
+      language: {
+        sProcessing: "กำลังดำเนินการ...",
+        sLengthMenu: "แสดง_MENU_ แถว",
+        sZeroRecords: "ไม่พบข้อมูล",
+        sInfo: "แสดง _START_ ถึง _END_ จาก _TOTAL_ แถว",
+        sInfoEmpty: "แสดง 0 ถึง 0 จาก 0 แถว",
+        sInfoFiltered: "(กรองข้อมูล _MAX_ ทุกแถว)",
+        sInfoPostFix: "",
+        sSearch: "ค้นหา:",
+        sUrl: "",
+        oPaginate: {
+          sFirst: "หน้าแรก",
+          sPrevious: "ก่อนหน้า",
+          sNext: "ถัดไป",
+          sLast: "หน้าสุดท้าย"
+        }
+      }
+    });
+  });
+});
+</script>
